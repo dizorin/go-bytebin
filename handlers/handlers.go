@@ -8,35 +8,23 @@ import (
 
 // PasteCreate returns paste page
 func PasteCreate(c *fiber.Ctx) error {
-	// Получить текст из body запроса
-	text := c.FormValue("text")
+	text := string(c.Body())
+	key := utils.GenerateID()
+	database.DB[key] = text
 
-	// Сгенерировать URL для пасты
-	id := utils.GenerateID()
-	url := "https://example.com/paste/" + id
-
-	// Сохранить текст в базе данных
-	database.DB[id] = text
-
-	// Отправить JSON-ответ с URL
 	return c.JSON(fiber.Map{
-		"url": url,
+		"key": key,
 	})
 }
 
 func PasteGet(c *fiber.Ctx) error {
-	// Получить ID пасты из URL
 	id := c.Params("id")
-
-	// Получить текст пасты из базы данных
 	text, found := database.DB[id]
 
-	// Если паста не найдена
 	if !found {
 		return c.Status(404).SendString("Not found")
 	}
 
-	// Отправить текст пасты
 	return c.SendString(text)
 }
 

@@ -1,0 +1,206 @@
+body {
+	background: #282c34 url(bg.png) top left fixed;
+	padding: 20px 154px 20px 50px;
+	margin: 0;
+}
+
+* {
+	overflow-x: hidden;
+}
+
+/* textarea */
+
+textarea {
+	background: transparent;
+	border: 0px;
+	color: #fff;
+	padding: 0px;
+	padding-right: calc(8px + 138px);
+	width: calc(100% + 8px + 138px);
+	height: calc(100% - 2px);
+	font-family: monospace;
+	outline: none;
+	overflow-y: auto;
+	resize: none;
+	font-size: 13px;
+}
+
+/* the line numbers */
+
+#linenos {
+  color: #7d7d7d;
+	z-index: -1000;
+	position: absolute;
+	top: 20px;
+	left: 0px;
+	width: 30px; /* 30 to get 20 away from box */
+	font-size: 13px;
+	font-family: monospace;
+	text-align: right;
+	line-height: 15px;
+}
+
+/* code box when locked */
+
+#box {
+	padding: 0px;
+	margin: 0px;
+	width: 100%;
+	border: 0px;
+	outline: none;
+	font-size: 13px;
+  overflow: inherit;
+  overflow-x: auto;
+  white-space: pre-wrap;
+}
+
+#box code {
+	line-height: 15px;
+	padding: 0px;
+	background: transparent !important;
+}
+
+/* key */
+
+#key {
+	position: fixed;
+	top: 8px;
+	right: 28px;
+	z-index: +1000; /* watch out */
+}
+
+#box1 {
+	padding: 5px;
+	text-align: center;
+	background: rgba(0,0,0,.30);
+	border-radius: 2px 2px 0 0;
+}
+
+#box2 {
+	background: rgba(0,0,0,.15);
+	font-size: 0px;
+	padding: 0px 5px;
+	border-radius: 0 0 2px 2px;
+}
+
+#box1 a.logo, #box1 a.logo:visited {
+	display: inline-block;
+	background: url(logo.png);
+	width: 111px;
+	height: 42px;
+}
+
+#box1 a.logo:hover {
+	background-position: 0 bottom;
+}
+
+#box2 .function {
+	background: url(function-icons.png);
+	width: 32px;
+	height: 37px;
+	display: inline-block;
+	position: relative;
+}
+
+#box2 .link embed {
+	vertical-align: bottom; /* fix for zeroClipboard style */
+}
+
+#box2 .function.enabled:hover {
+	cursor: pointer;
+}
+
+#box3, #messages li {
+	background: rgba(0,0,0,.10);
+	font-family: Helvetica, sans-serif;
+	font-size: 12px;
+	line-height: 14px;
+	padding: 10px 15px;
+	border-radius: 2px;
+}
+
+#box3 .label, #messages li {
+	color: #fff;
+	font-weight: bold;
+}
+
+#box3 .shortcut {
+	color: #c4dce3;
+	font-weight: normal;
+}
+
+#box2 .function.save { background-position: -5px top; }
+#box2 .function.enabled.save { background-position: -5px center; }
+#box2 .function.enabled.save:hover { background-position: -5px bottom; }
+
+#box2 .function.new { background-position: -42px top; }
+#box2 .function.enabled.new { background-position: -42px center; }
+#box2 .function.enabled.new:hover { background-position: -42px bottom; }
+
+#box2 .function.duplicate { background-position: -79px top; }
+#box2 .function.enabled.duplicate { background-position: -79px center; }
+#box2 .function.enabled.duplicate:hover { background-position: -79px bottom; }
+
+#box2 .function.raw { background-position: -116px top; }
+#box2 .function.enabled.raw { background-position: -116px center; }
+#box2 .function.enabled.raw:hover { background-position: -116px bottom; }
+
+#box2 .button-picture{ border-width: 0; font-size: inherit; }
+
+#messages {
+	position:fixed;
+	top:0px;
+	right:138px;
+	margin:0;
+	padding:0;
+	width:400px;
+}
+
+#messages li {
+	background:rgba(23,62,72,0.8);
+	margin:0 auto;
+	list-style:none;
+}
+
+#messages li.error {
+	background:rgba(102,8,0,0.8);
+}
+
+@media (max-width: 500px) {
+	body {
+		padding: 20px 20px 57px 50px;
+	}
+	#key {
+		top: initial;
+  	bottom: 0px;
+  	right: 0px;
+  	width: 100%;
+	}
+	#key > #box1 {
+		display: none;
+		z-index: 0;
+	}
+	#key > #box2 {
+		display: flex;
+		justify-content: space-between;
+		padding: 0 50px;
+		z-index: 500;
+	}
+	#key > #box3 {
+		z-index: -1;
+		bottom: 37px; left: 0;
+		width: 100%;
+		display: flex;
+		justify-content: center;
+		position: fixed;
+		padding: 10px 0;
+	}
+	#key > #box3 > .label {
+		font-size: 1.1em;
+
+	}
+	#key > #box3 > .shortcut {
+		display: none;
+	}
+
+}

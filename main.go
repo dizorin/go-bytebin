@@ -7,12 +7,15 @@ import (
 	"github.com/gofiber/fiber/v2/log"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
+	"regexp"
 )
 
 var (
 	port = flag.String("port", ":3000", "Port to listen on")
 	prod = flag.Bool("prod", false, "Enable prefork in Production")
 )
+
+var rToken = regexp.MustCompile("^/[a-zA-Z\\d]{7}$")
 
 func main() {
 	// Parse command-line flags
@@ -31,12 +34,20 @@ func main() {
 	app.Use(recover.New())
 	app.Use(logger.New())
 
-	// Create a /api endpoint
-	api := app.Group("/api/paste")
+	// Create a /documents endpoint
+	api := app.Group("/documents")
 
 	// Bind handlers
 	api.Get("/:id", handlers.PasteGet)
-	api.Post("/", handlers.PasteCreate)
+	api.Post("/post", handlers.PasteCreate)
+
+	app.Get("/*", func(c *fiber.Ctx) error {
+		if rToken.MatchString(c.Path()) {
+			return c.SendFile("./public/index.html")
+		} else {
+			return c.Next()
+		}
+	})
 
 	// Setup static files
 	app.Static("/", "./public")

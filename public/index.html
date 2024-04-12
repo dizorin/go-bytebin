@@ -1,0 +1,72 @@
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Bytebin</title>
+    <meta name="application-name" content="Bytebin"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="theme-color" content="#22252C">
+
+    <link rel="stylesheet" type="text/css" href="application.css"/>
+    <link rel="stylesheet" type="text/css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css"/>
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script type="text/javascript"
+            src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script type="text/javascript" src="application.js"></script>
+
+    <meta name="robots" content="noindex,nofollow"/>
+</head>
+<body>
+<ul id="messages"></ul>
+
+<div id="key">
+    <div id="box1">
+        <a href="/about.md" class="logo"></a>
+    </div>
+    <div id="box2">
+        <button class="save function button-picture">Save</button>
+        <button class="new function button-picture">New</button>
+        <button class="duplicate function button-picture">Duplicate & Edit</button>
+        <button class="raw function button-picture">raw text</button>
+    </div>
+    <div id="box3" style="display:none;">
+        <div class="label"></div>
+        <div class="shortcut"></div>
+    </div>
+</div>
+
+<div id="linenos"></div>
+<pre id="box" style="display:none;" class="hljs" tabindex="0"><code class="language-html"></code></pre>
+<textarea wrap="soft | hard" spellcheck="false" style="display:none;"></textarea>
+
+<script type="text/javascript">
+    var app = null;
+    // Handle pops
+    var handlePop = function (evt) {
+        var path = evt.target.location.pathname;
+        if (path === '/') {
+            app.newDocument(true);
+        } else {
+            app.loadDocument(path.substring(1, path.length));
+        }
+    };
+    // Set up the pop state to handle loads, skipping the first load
+    // to make chrome behave like others:
+    // http://code.google.com/p/chromium/issues/detail?id=63040
+    setTimeout(function () {
+        window.onpopstate = function (evt) {
+            try {
+                handlePop(evt);
+            } catch (err) { /* not loaded yet */
+            }
+        };
+    }, 1000);
+    // Construct app and load initial path
+    $(function () {
+        app = new paste('Bytebin', {});
+        handlePop({target: window});
+    });
+</script>
+</body>
+</html>
