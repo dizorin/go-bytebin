@@ -41,7 +41,7 @@ func TestRetrieveExistingPaste(t *testing.T) {
 
 	// Create a test paste in the database
 	testID := "test123"
-	database.DB[testID] = "This is a test paste"
+	database.db[testID] = "This is a test paste"
 
 	// Create a GET request to retrieve the test paste
 	req := httptest.NewRequest("GET", "/api/paste/"+testID, nil)

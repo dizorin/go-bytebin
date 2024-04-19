@@ -3,7 +3,7 @@
 
 # Dev build
 .idea/
-build/
+build
 tmp/
 
 # Test

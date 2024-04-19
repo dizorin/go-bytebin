@@ -1,37 +1,56 @@
 package main
 
 import (
-	"flag"
+	"context"
+	"github.com/dizorin/go-bytebin/database/cache"
+	"github.com/dizorin/go-bytebin/executor"
 	"github.com/dizorin/go-bytebin/handlers"
+	"github.com/dizorin/go-bytebin/utils"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/log"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
-	"regexp"
+	"github.com/joho/godotenv"
+	"os"
 )
 
-var (
-	port = flag.String("port", ":3000", "Port to listen on")
-	prod = flag.Bool("prod", false, "Enable prefork in Production")
-)
-
-var rToken = regexp.MustCompile("^/[a-zA-Z\\d]{7}$")
+func init() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal(err)
+	}
+}
 
 func main() {
-	// Parse command-line flags
-	flag.Parse()
+	ctx, cancelFunc := context.WithCancel(context.Background())
+	defer cancelFunc()
 
 	// Connected with database
-	//database.Connect()
+	// database.Connect()
+
+	cache.Setup(ctx)
+	executor.SetupScheduler(ctx)
 
 	// Create fiber app
 	app := fiber.New(fiber.Config{
-		AppName: "Bytebin",
-		Prefork: *prod, // go run app.go -prod
+		AppName: os.Getenv("APP_NAME"),
+		Prefork: utils.GetenvBool("PREFORK"),
+
+		ErrorHandler: func(ctx *fiber.Ctx, err error) error {
+			log.Error(err)
+
+			return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"code":    fiber.StatusInternalServerError,
+				"message": "Internal server error",
+			})
+		},
 	})
 
 	// Middleware
-	app.Use(recover.New())
+	app.Use(recover.New(recover.Config{
+		StackTraceHandler: recover.ConfigDefault.StackTraceHandler,
+		EnableStackTrace:  true,
+	}))
 	app.Use(logger.New())
 
 	// Create a /documents endpoint
@@ -42,7 +61,7 @@ func main() {
 	api.Post("/post", handlers.PasteCreate)
 
 	app.Get("/*", func(c *fiber.Ctx) error {
-		if rToken.MatchString(c.Path()) {
+		if utils.RegexToken.MatchString(c.Path()) {
 			return c.SendFile("./public/index.html")
 		} else {
 			return c.Next()
@@ -53,7 +72,7 @@ func main() {
 	app.Static("/", "./public")
 
 	// Handle not founds
-	//app.Use(handlers.NotFound)
+	// app.Use(handlers.NotFound)
 
-	log.Fatal(app.Listen(*port))
+	log.Panic(app.Listen(os.Getenv("HOST")))
 }
